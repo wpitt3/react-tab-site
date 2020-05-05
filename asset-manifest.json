@@ -1,0 +1,23 @@
+{
+  "files": {
+    "main.css": "/react-tab-site/static/css/main.5f361e03.chunk.css",
+    "main.js": "/react-tab-site/static/js/main.9c5ca86c.chunk.js",
+    "main.js.map": "/react-tab-site/static/js/main.9c5ca86c.chunk.js.map",
+    "runtime-main.js": "/react-tab-site/static/js/runtime-main.e83e7668.js",
+    "runtime-main.js.map": "/react-tab-site/static/js/runtime-main.e83e7668.js.map",
+    "static/js/2.06b64c4a.chunk.js": "/react-tab-site/static/js/2.06b64c4a.chunk.js",
+    "static/js/2.06b64c4a.chunk.js.map": "/react-tab-site/static/js/2.06b64c4a.chunk.js.map",
+    "index.html": "/react-tab-site/index.html",
+    "precache-manifest.3fa3fce8e96bc6e92bc39aa7d680816e.js": "/react-tab-site/precache-manifest.3fa3fce8e96bc6e92bc39aa7d680816e.js",
+    "service-worker.js": "/react-tab-site/service-worker.js",
+    "static/css/main.5f361e03.chunk.css.map": "/react-tab-site/static/css/main.5f361e03.chunk.css.map",
+    "static/js/2.06b64c4a.chunk.js.LICENSE.txt": "/react-tab-site/static/js/2.06b64c4a.chunk.js.LICENSE.txt",
+    "static/media/logo.svg": "/react-tab-site/static/media/logo.5d5d9eef.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e83e7668.js",
+    "static/js/2.06b64c4a.chunk.js",
+    "static/css/main.5f361e03.chunk.css",
+    "static/js/main.9c5ca86c.chunk.js"
+  ]
+}
