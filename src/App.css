@@ -31,4 +31,10 @@
 #tab-text textarea{
   width: 100%;
   font-family: monospace;
+  resize: none;
+  border: none;
+}
+
+.ui.list{
+  margin:0px;
 }

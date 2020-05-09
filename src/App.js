@@ -1,17 +1,49 @@
 import React, { Component } from 'react';
 import './App.css';
 import { Header, Grid, Segment, Button, List, TextArea } from 'semantic-ui-react'
+import { convertStringsToTabText, convertTabTextToStrings, handleTabEdit, tabHeight } from './tabEdit';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       currentTabText: "",
+      currentStrings: [],
       editModeInsert:false,
+      cursorPosition: -1,
+      lineLength: 65,
       songs: []
     };
 
     this.handleEditModeChange = this.handleEditModeChange.bind(this);
+    this.handleTabEdit = this.handleTabEdit.bind(this);
+    this.handleSave = this.handleSave.bind(this);
+    this.handleLoad = this.handleLoad.bind(this);
+  }
+
+  handleTabEdit(event) {
+    const cursorPosition = document.getElementById("tab-text").firstElementChild.selectionStart;
+
+    this.setState({
+      cursorPosition: cursorPosition
+    });
+
+    const lineLength = this.state.lineLength;
+    const strings = this.state.currentStrings;
+    console.log(strings);
+    const editModeInsert = this.state.editModeInsert;
+    const newTab = event.target.value;
+
+    this.setState({
+      currentStrings: handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInsert)
+    });
+  }
+
+
+  handleSave(event) {
+  }
+
+  handleLoad(event) {
   }
 
   buildEditButton(name, positive) {
@@ -40,8 +72,6 @@ class App extends Component {
                <Button content='Load' onClick={this.handleLoad}/>
               </Button.Group>
             </Segment>
-          </Grid.Column>
-          <Grid.Column>
             <Segment>
               <Button.Group>
                 {this.buildEditButton('Insert', this.state.editModeInsert)}
@@ -49,15 +79,24 @@ class App extends Component {
                 {this.buildEditButton('Replace', !this.state.editModeInsert)}
               </Button.Group>
             </Segment>
-          </Grid.Column>
-          <Grid.Column>
             <Segment id="tab-text">
-              <TextArea autoHeight />
+              <TextArea rows={tabHeight(this.state.currentStrings, this.state.lineLength)} value={convertStringsToTabText(this.state.currentStrings, this.state.lineLength)} onChange={this.handleTabEdit}/>
             </Segment>
           </Grid.Column>
         </Grid>
       </div>
     );
+  }
+
+  componentDidUpdate() {
+    const cursorPosition = this.state.cursorPosition;
+    if ( cursorPosition !== -1) {
+      document.getElementById("tab-text").firstElementChild.selectionStart = cursorPosition
+      document.getElementById("tab-text").firstElementChild.selectionEnd = cursorPosition
+      this.setState({
+        cursorPosition: -1
+      });
+    }
   }
 }
 
