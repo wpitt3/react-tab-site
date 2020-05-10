@@ -9,7 +9,6 @@ function convertTabTextToStrings(tab) {
       strings[z] = strings[z].concat(tabLines[z + x*7])
     }
   }
-  let lengths = []
   for (var y = 0; y < 6; y++) {
     strings[y] = strings[y].filter(note => note !== undefined);
 
@@ -19,6 +18,10 @@ function convertTabTextToStrings(tab) {
     }
   }
   return strings;
+}
+
+function readTabLine(line) {
+  return (line.split('').map((s) => !isNaN(s) && ! (s === " ") ? parseInt(s) : -1))
 }
 
 function convertStringsToTabText(strings, lineLength) {
@@ -38,29 +41,22 @@ function convertStringsToTabText(strings, lineLength) {
     return lines;
   });
 
-
   let tab = [];
   for (var i = 0, len = parsed[0].length; i < len; i++) {
     for (var j = 0; j < 6; j++) {
       tab.push(parsed[j][i]);
     }
-    if (i != len-1) {
+    if (i !== len-1) {
       tab.push("");
     }
   }
 
-  const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^\-+$/g));
+  const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^-+$/g));
   if (lastLinesAreJustSpace) {
     tab = tab.slice(0, -6);
-  } else {
-
   }
 
   return tab.join("\n");
-}
-
-function readTabLine(line) {
-  return (line.split('').map((s) => !isNaN(s) && ! (s === " ") ? parseInt(s) : -1))
 }
 
 function handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInsert) {
@@ -108,10 +104,6 @@ function findFirstDifferenceIndex(cursorPosition, lineLength) {
   const sectionSize = lineLength*6+7;
   const section = Math.floor((cursorPosition / sectionSize));
   return ((cursorPosition%sectionSize)%(lineLength+1))+(section*lineLength);
-}
-
-function areStringsValid(strings) {
-
 }
 
 function tabHeight(strings, lineLength) {
