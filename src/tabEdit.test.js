@@ -21,6 +21,13 @@ describe('convertTabToStrings', () => {
     expect(result).toHaveLength(6);
     expect(result).toStrictEqual([[2,-1],[3,-1],[2,-1],[0,-1],[-1,-1],[-1,-1]]);
   })
+
+  // test('with unbalanced lines', () => {
+  //   const result = convertTabTextToStrings("2");
+
+  //   expect(result).toHaveLength(6);
+  //   expect(result).toStrictEqual([[2],[-1],[-1],[-1],[-1],[-1]]);
+  // })
 });
 
 describe('convertStringsToTabText', () => {
@@ -61,6 +68,78 @@ describe('convertStringsToTabText', () => {
   })
 });
 
+describe('handleTabEdit', () => {
+  test('Delete a single note on line 0', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    const cursorIndex = firstIndexOf(modifiedStrings, 0, 0)
+    modifiedStrings[0].splice(4, 1);
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
+
+    expect(newStrings[0]).toStrictEqual([ 2, -1, 3, -1, -1, -1]);
+  })
+
+  test('Delete a single note on line 1', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    const cursorIndex = firstIndexOf(modifiedStrings, 1, 0)
+    modifiedStrings[1].splice(2, 1);
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
+
+    expect(newStrings[1]).toStrictEqual([ 3, -1, -1, -1, 0, -1]);
+  })
+
+  test('Replace a single note', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    modifiedStrings[0].splice(4, 0, 5);
+    const cursorIndex = firstIndexOf(modifiedStrings, 0, 5) + 1
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
+
+    expect(newStrings[0]).toStrictEqual([ 2, -1, 3, -1, 5, -1]);
+  })
+
+  test('Insert a single note of chord', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    modifiedStrings[0].splice(4, 0, 5);
+    const cursorIndex = firstIndexOf(modifiedStrings, 0, 5) + 1
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, true);
+
+    expect(newStrings[0]).toStrictEqual([ 2, -1, 3, -1, 5, 0, -1]);
+    expect(newStrings[1]).toStrictEqual([ 3, -1, 0, -1, -1, 0, -1]);
+    expect(newStrings[2]).toStrictEqual([ 2, -1, 0, -1, -1, 0, -1]);
+    expect(newStrings[3]).toStrictEqual([ 0, -1, 0, -1, -1, 0, -1]);
+    expect(newStrings[4]).toStrictEqual([ -1, -1, 2, -1, -1, 0, -1]);
+    expect(newStrings[5]).toStrictEqual([ -1, -1, 3, -1, -1, 0, -1]);
+  })
+
+  test('Delete a note in insert mode', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    const cursorIndex = firstIndexOf(modifiedStrings, 1, 0)
+    modifiedStrings[1].splice(2, 1);
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, true);
+
+    expect(newStrings[0]).toStrictEqual([ 2, -1, -1, 0, -1]);
+    expect(newStrings[1]).toStrictEqual([ 3, -1, -1, 0, -1]);
+    expect(newStrings[2]).toStrictEqual([ 2, -1, -1, 0, -1]);
+    expect(newStrings[3]).toStrictEqual([ 0, -1, -1, 0, -1]);
+    expect(newStrings[4]).toStrictEqual([ -1, -1, -1, 0, -1]);
+    expect(newStrings[5]).toStrictEqual([ -1, -1,-1, 0, -1]);
+  })
+});
+
+
+function firstIndexOf(strings, stringIndex, value, length=6) {
+return strings[stringIndex].findIndex((x) => x == value) + stringIndex * (length + 1)
+}
+
 function basicStrings() {
   return [
     [ 2, -1, 3, -1, 0],
@@ -71,3 +150,16 @@ function basicStrings() {
     [-1, -1, 3, -1, 0]
   ]
 }
+
+function basicStringsWithTrailingSpace() {
+  return [
+    [ 2, -1, 3, -1, 0, -1],
+    [ 3, -1, 0, -1, 0, -1],
+    [ 2, -1, 0, -1, 0, -1],
+    [ 0, -1, 0, -1, 0, -1],
+    [-1, -1, 2, -1, 0, -1],
+    [-1, -1, 3, -1, 0, -1]
+  ]
+}
+
+

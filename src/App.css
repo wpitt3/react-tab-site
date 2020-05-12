@@ -35,6 +35,10 @@
   border: none;
 }
 
+#tab-text textarea:focus {
+  outline: none;
+}
+
 .ui.list{
   margin:0px;
 }

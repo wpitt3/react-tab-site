@@ -59,8 +59,7 @@ function convertStringsToTabText(strings, lineLength) {
   return tab.join("\n");
 }
 
-function handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInsert) {
-  const newStrings = convertTabTextToStrings(newTab);
+function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMode) {
   const lengths = newStrings.map(string => string.length);
   const min = Math.min.apply(Math, lengths);
   const max = Math.max.apply(Math, lengths);
@@ -68,13 +67,14 @@ function handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInse
   const maxCount = lengths.filter(length => max === length).length
 
   if (max - min !== 1) {
-    return strings;
+    return { newStrings: strings, newCursor: cursorPosition};
   }
 
+  // value has been removed
   if (minCount === 1) {
     const changeIndex = lengths.findIndex(length => length === min);
     const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength);
-    if (editModeInsert) {
+    if (insertMode) {
       for (var j = 0; j < 6; j++) {
         if(changeIndex !== j) {
           newStrings[j].splice(firstDifferenceIndex, 1);
@@ -84,10 +84,12 @@ function handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInse
       newStrings[changeIndex].splice(firstDifferenceIndex, 0, -1);
     }
   }
+
+  // value has been added
   if (maxCount === 1) {
     const changeIndex = lengths.findIndex(length => length === max);
     const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength);
-    if (editModeInsert) {
+    if (insertMode) {
       for (var i = 0; i < 6; i++) {
         if(changeIndex !== i) {
           newStrings[i].splice(firstDifferenceIndex-1, 0, -1);
@@ -97,7 +99,7 @@ function handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInse
       newStrings[changeIndex].splice(firstDifferenceIndex, 1);
     }
   }
-  return newStrings;
+  return { newStrings: newStrings, newCursor: cursorPosition}
 }
 
 function findFirstDifferenceIndex(cursorPosition, lineLength) {

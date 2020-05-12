@@ -9,7 +9,7 @@ class App extends Component {
     this.state = {
       currentTabText: "",
       currentStrings: [],
-      editModeInsert:false,
+      insertMode:false,
       cursorPosition: -1,
       lineLength: 65,
       songs: []
@@ -23,19 +23,16 @@ class App extends Component {
 
   handleTabEdit(event) {
     const cursorPosition = document.getElementById("tab-text").firstElementChild.selectionStart;
-
-    this.setState({
-      cursorPosition: cursorPosition
-    });
-
     const lineLength = this.state.lineLength;
     const strings = this.state.currentStrings;
-    console.log(strings);
-    const editModeInsert = this.state.editModeInsert;
+    const insertMode = this.state.insertMode;
     const newTab = event.target.value;
 
+    const { newStrings, newCursor } = handleTabEdit(convertTabTextToStrings(newTab), strings, cursorPosition, lineLength, insertMode)
+
     this.setState({
-      currentStrings: handleTabEdit(newTab, cursorPosition, strings, lineLength, editModeInsert)
+      currentStrings: newStrings,
+      cursorPosition: newCursor
     });
   }
 
@@ -55,7 +52,7 @@ class App extends Component {
   }
 
   handleEditModeChange(event) {
-    this.setState({editModeInsert: !this.state.editModeInsert});
+    this.setState({insertMode: !this.state.insertMode});
   }
 
   render() {
@@ -74,9 +71,9 @@ class App extends Component {
             </Segment>
             <Segment>
               <Button.Group>
-                {this.buildEditButton('Insert', this.state.editModeInsert)}
+                {this.buildEditButton('Insert', this.state.insertMode)}
                 <Button.Or />
-                {this.buildEditButton('Replace', !this.state.editModeInsert)}
+                {this.buildEditButton('Replace', !this.state.insertMode)}
               </Button.Group>
             </Segment>
             <Segment id="tab-text">
