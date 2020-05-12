@@ -11,7 +11,7 @@ class App extends Component {
       currentStrings: [],
       insertMode:false,
       cursorPosition: -1,
-      lineLength: 65,
+      lineLength: 6,
       songs: []
     };
 
@@ -86,10 +86,16 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    const cursorPosition = this.state.cursorPosition;
+    let {cursorPosition, lineLength} = this.state;
     if ( cursorPosition !== -1) {
-      document.getElementById("tab-text").firstElementChild.selectionStart = cursorPosition
-      document.getElementById("tab-text").firstElementChild.selectionEnd = cursorPosition
+      const textArea = document.getElementById("tab-text").firstElementChild;
+
+      if (cursorPosition > textArea.value.length) {
+        cursorPosition -= (lineLength + 1) * 6 + 1 - lineLength
+      }
+
+      textArea.selectionStart = cursorPosition
+      textArea.selectionEnd = cursorPosition
       this.setState({
         cursorPosition: -1
       });

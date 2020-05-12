@@ -78,6 +78,7 @@ describe('handleTabEdit', () => {
     const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
 
     expect(newStrings[0]).toStrictEqual([ 2, -1, 3, -1, -1, -1]);
+    expect(newCursor).toBe(cursorIndex);
   })
 
   test('Delete a single note on line 1', () => {
@@ -89,6 +90,7 @@ describe('handleTabEdit', () => {
     const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
 
     expect(newStrings[1]).toStrictEqual([ 3, -1, -1, -1, 0, -1]);
+    expect(newCursor).toBe(cursorIndex);
   })
 
   test('Replace a single note', () => {
@@ -100,6 +102,7 @@ describe('handleTabEdit', () => {
     const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, false);
 
     expect(newStrings[0]).toStrictEqual([ 2, -1, 3, -1, 5, -1]);
+    expect(newCursor).toBe(cursorIndex);
   })
 
   test('Insert a single note of chord', () => {
@@ -116,6 +119,7 @@ describe('handleTabEdit', () => {
     expect(newStrings[3]).toStrictEqual([ 0, -1, 0, -1, -1, 0, -1]);
     expect(newStrings[4]).toStrictEqual([ -1, -1, 2, -1, -1, 0, -1]);
     expect(newStrings[5]).toStrictEqual([ -1, -1, 3, -1, -1, 0, -1]);
+    expect(newCursor).toBe(cursorIndex);
   })
 
   test('Delete a note in insert mode', () => {
@@ -132,12 +136,24 @@ describe('handleTabEdit', () => {
     expect(newStrings[3]).toStrictEqual([ 0, -1, -1, 0, -1]);
     expect(newStrings[4]).toStrictEqual([ -1, -1, -1, 0, -1]);
     expect(newStrings[5]).toStrictEqual([ -1, -1,-1, 0, -1]);
+    expect(newCursor).toBe(cursorIndex);
+  })
+
+  test('Cursor stays in correct place on new line insert', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    modifiedStrings[0].splice(6, 0, 5);
+    const cursorIndex = firstIndexOf(modifiedStrings, 0, 5) + 1
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, true);
+
+    expect(newCursor).toBe(cursorIndex + 5 * 7 + 1);
   })
 });
 
 
 function firstIndexOf(strings, stringIndex, value, length=6) {
-return strings[stringIndex].findIndex((x) => x == value) + stringIndex * (length + 1)
+  return strings[stringIndex].findIndex((x) => x == value) + stringIndex * (length + 1)
 }
 
 function basicStrings() {

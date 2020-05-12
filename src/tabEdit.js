@@ -70,42 +70,58 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
     return { newStrings: strings, newCursor: cursorPosition};
   }
 
+  let newCursor = cursorPosition;
+
   // value has been removed
   if (minCount === 1) {
-    const changeIndex = lengths.findIndex(length => length === min);
-    const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength);
+    const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength, false);
+    const lineIndex = lengths.findIndex(length => length === min);
     if (insertMode) {
       for (var j = 0; j < 6; j++) {
-        if(changeIndex !== j) {
+        if(lineIndex !== j) {
           newStrings[j].splice(firstDifferenceIndex, 1);
         }
       }
     } else {
-      newStrings[changeIndex].splice(firstDifferenceIndex, 0, -1);
+      newStrings[lineIndex].splice(firstDifferenceIndex, 0, -1);
     }
   }
 
   // value has been added
   if (maxCount === 1) {
-    const changeIndex = lengths.findIndex(length => length === max);
-    const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength);
+    const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength, true);
+    const lineIndex = lengths.findIndex(length => length === max);
     if (insertMode) {
       for (var i = 0; i < 6; i++) {
-        if(changeIndex !== i) {
+        if(lineIndex !== i) {
           newStrings[i].splice(firstDifferenceIndex-1, 0, -1);
         }
       }
     } else {
-      newStrings[changeIndex].splice(firstDifferenceIndex, 1);
+      newStrings[lineIndex].splice(firstDifferenceIndex, 1);
     }
+
+    newCursor = findNewCursorPosition(firstDifferenceIndex, lineIndex, lineLength);
   }
-  return { newStrings: newStrings, newCursor: cursorPosition}
+
+
+  return { newStrings: newStrings, newCursor: newCursor}
 }
 
-function findFirstDifferenceIndex(cursorPosition, lineLength) {
+function findFirstDifferenceIndex(cursorPosition, lineLength, noteAdded) {
   const sectionSize = lineLength*6+7;
-  const section = Math.floor((cursorPosition / sectionSize));
+  let section = Math.floor(cursorPosition / sectionSize);
+  if (noteAdded && ((cursorPosition%sectionSize)%(lineLength+1)) == 0) {
+    section += 1
+  }
   return ((cursorPosition%sectionSize)%(lineLength+1))+(section*lineLength);
+}
+
+function findNewCursorPosition(cursorIndex, lineIndex, lineLength) {
+  const sectionSize = lineLength*6+7;
+
+  const section = Math.floor(cursorIndex / lineLength);
+  return section*sectionSize +(lineLength+1)*lineIndex + cursorIndex%lineLength;
 }
 
 function tabHeight(strings, lineLength) {
