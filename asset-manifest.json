@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/react-tab-site/static/css/main.aa6ff7f2.chunk.css",
-    "main.js": "/react-tab-site/static/js/main.be1c5537.chunk.js",
-    "main.js.map": "/react-tab-site/static/js/main.be1c5537.chunk.js.map",
+    "main.css": "/react-tab-site/static/css/main.f417dc8d.chunk.css",
+    "main.js": "/react-tab-site/static/js/main.0f886f87.chunk.js",
+    "main.js.map": "/react-tab-site/static/js/main.0f886f87.chunk.js.map",
     "runtime-main.js": "/react-tab-site/static/js/runtime-main.e83e7668.js",
     "runtime-main.js.map": "/react-tab-site/static/js/runtime-main.e83e7668.js.map",
     "static/css/2.f8f72493.chunk.css": "/react-tab-site/static/css/2.f8f72493.chunk.css",
-    "static/js/2.356d1b33.chunk.js": "/react-tab-site/static/js/2.356d1b33.chunk.js",
-    "static/js/2.356d1b33.chunk.js.map": "/react-tab-site/static/js/2.356d1b33.chunk.js.map",
+    "static/js/2.42933d80.chunk.js": "/react-tab-site/static/js/2.42933d80.chunk.js",
+    "static/js/2.42933d80.chunk.js.map": "/react-tab-site/static/js/2.42933d80.chunk.js.map",
     "index.html": "/react-tab-site/index.html",
-    "precache-manifest.7d6ab8abcd5f6b0d1ddeacb56379be65.js": "/react-tab-site/precache-manifest.7d6ab8abcd5f6b0d1ddeacb56379be65.js",
+    "precache-manifest.0f876f6ac74726a299bf2aa2d569ac5f.js": "/react-tab-site/precache-manifest.0f876f6ac74726a299bf2aa2d569ac5f.js",
     "service-worker.js": "/react-tab-site/service-worker.js",
     "static/css/2.f8f72493.chunk.css.map": "/react-tab-site/static/css/2.f8f72493.chunk.css.map",
-    "static/css/main.aa6ff7f2.chunk.css.map": "/react-tab-site/static/css/main.aa6ff7f2.chunk.css.map",
-    "static/js/2.356d1b33.chunk.js.LICENSE.txt": "/react-tab-site/static/js/2.356d1b33.chunk.js.LICENSE.txt",
+    "static/css/main.f417dc8d.chunk.css.map": "/react-tab-site/static/css/main.f417dc8d.chunk.css.map",
+    "static/js/2.42933d80.chunk.js.LICENSE.txt": "/react-tab-site/static/js/2.42933d80.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/react-tab-site/static/media/outline-icons.ef60a4f6.woff"
   },
   "entrypoints": [
     "static/js/runtime-main.e83e7668.js",
     "static/css/2.f8f72493.chunk.css",
-    "static/js/2.356d1b33.chunk.js",
-    "static/css/main.aa6ff7f2.chunk.css",
-    "static/js/main.be1c5537.chunk.js"
+    "static/js/2.42933d80.chunk.js",
+    "static/css/main.f417dc8d.chunk.css",
+    "static/js/main.0f886f87.chunk.js"
   ]
 }
