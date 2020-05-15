@@ -8,10 +8,10 @@ class App extends Component {
     super(props);
     this.state = {
       currentTabText: "",
-      currentStrings: [],
+      currentStrings: [[],[],[],[],[],[]],
       insertMode:false,
       cursorPosition: -1,
-      lineLength: 6,
+      lineLength: 65,
       songs: []
     };
 
@@ -19,6 +19,7 @@ class App extends Component {
     this.handleTabEdit = this.handleTabEdit.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
   handleTabEdit(event) {
@@ -55,6 +56,10 @@ class App extends Component {
     this.setState({insertMode: !this.state.insertMode});
   }
 
+  handleKeyPress(event) {
+    // console.log(event.key);
+  }
+
   render() {
     return (
       <div className="App">
@@ -77,7 +82,7 @@ class App extends Component {
               </Button.Group>
             </Segment>
             <Segment id="tab-text">
-              <TextArea rows={tabHeight(this.state.currentStrings, this.state.lineLength)} value={convertStringsToTabText(this.state.currentStrings, this.state.lineLength)} onChange={this.handleTabEdit}/>
+              <TextArea rows={tabHeight(this.state.currentStrings, this.state.lineLength)} value={convertStringsToTabText(this.state.currentStrings, this.state.lineLength)} onKeyDown={this.handleKeyPress} onChange={this.handleTabEdit}/>
             </Segment>
           </Grid.Column>
         </Grid>

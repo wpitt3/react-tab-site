@@ -1,4 +1,3 @@
-tests
 
 shortcuts
 paste into doc

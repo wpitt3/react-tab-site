@@ -139,7 +139,7 @@ describe('handleTabEdit', () => {
     expect(newCursor).toBe(cursorIndex);
   })
 
-  test('Cursor stays in correct place on new line insert', () => {
+  test('Cursor moves to next block on new line, insert mode', () => {
     const oldStrings = basicStringsWithTrailingSpace()
     let modifiedStrings = basicStringsWithTrailingSpace()
     modifiedStrings[0].splice(6, 0, 5);
@@ -148,6 +148,17 @@ describe('handleTabEdit', () => {
     const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, true);
 
     expect(newCursor).toBe(cursorIndex + 5 * 7 + 1);
+  })
+
+  test('Cursor stays in correct place on new line delete', () => {
+    const oldStrings = basicStringsWithTrailingSpace()
+    let modifiedStrings = basicStringsWithTrailingSpace()
+    modifiedStrings[0].splice(5, 1);
+    const cursorIndex = firstIndexOf(modifiedStrings, 0, 0) + 5 * 6 + 1
+
+    const { newStrings, newCursor } = handleTabEdit(modifiedStrings, oldStrings, cursorIndex, 6, true);
+
+    expect(newCursor).toBe(cursorIndex );
   })
 });
 

@@ -28,7 +28,9 @@ function convertStringsToTabText(strings, lineLength) {
   if (strings.length === 0) {
     return ""
   }
-  const parsed = strings.map(string => {
+
+  // parsed guitar strings into arrays of rows to display
+  let parsed = strings.map(string => {
     let lines = [];
     const x = string.map(note => note.toString().replace('-1', '-'));
     for (var i = 0, len = string.length/lineLength; i < len; i++) {
@@ -41,6 +43,13 @@ function convertStringsToTabText(strings, lineLength) {
     return lines;
   });
 
+  while(parsed[0].length < 4) {
+    for(let i = 0; i < strings.length; i++) {
+      parsed[i].push("-".repeat(lineLength));
+    }
+  }
+
+  // create single array of all lines to display
   let tab = [];
   for (var i = 0, len = parsed[0].length; i < len; i++) {
     for (var j = 0; j < 6; j++) {
@@ -51,9 +60,12 @@ function convertStringsToTabText(strings, lineLength) {
     }
   }
 
-  const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^-+$/g));
-  if (lastLinesAreJustSpace) {
-    tab = tab.slice(0, -6);
+
+  if (parsed[0].length > 4) {
+    const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^-+$/g));
+    if (lastLinesAreJustSpace) {
+      tab = tab.slice(0, -6);
+    }
   }
 
   return tab.join("\n");
@@ -67,6 +79,7 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
   const maxCount = lengths.filter(length => max === length).length
 
   if (max - min !== 1) {
+
     return { newStrings: strings, newCursor: cursorPosition};
   }
 
@@ -111,7 +124,7 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
 function findFirstDifferenceIndex(cursorPosition, lineLength, noteAdded) {
   const sectionSize = lineLength*6+7;
   let section = Math.floor(cursorPosition / sectionSize);
-  if (noteAdded && ((cursorPosition%sectionSize)%(lineLength+1)) == 0) {
+  if (noteAdded && ((cursorPosition%sectionSize)%(lineLength+1)) === 0) {
     section += 1
   }
   return ((cursorPosition%sectionSize)%(lineLength+1))+(section*lineLength);
