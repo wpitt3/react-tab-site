@@ -32,7 +32,7 @@ describe('convertTabToStrings', () => {
 
 describe('convertStringsToTabText', () => {
   test('single section', () => {
-    const result = convertStringsToTabText(basicStrings(), 5);
+    const result = convertStringsToTabText(basicStrings(), 5, 1);
 
     expect(result).toHaveLength(35);
     expect(result).toBe("2-3-0\n3-0-0\n2-0-0\n0-0-0\n--2-0\n--3-0"
@@ -40,14 +40,14 @@ describe('convertStringsToTabText', () => {
   })
 
   test('two sections', () => {
-    const result = convertStringsToTabText(basicStrings(), 3);
+    const result = convertStringsToTabText(basicStrings(), 3, 1);
 
     expect(result).toHaveLength(48);
     expect(result).toBe("2-3\n3-0\n2-0\n0-0\n--2\n--3\n\n-0-\n-0-\n-0-\n-0-\n-0-\n-0-");
   })
 
   test('fills out all sections to length', () => {
-    const result = convertStringsToTabText(basicStrings(), 3);
+    const result = convertStringsToTabText(basicStrings(), 3, 1);
 
     expect(result).toHaveLength(48);
     expect(result).toBe("2-3\n3-0\n2-0\n0-0\n--2\n--3\n\n-0-\n-0-\n-0-\n-0-\n-0-\n-0-");
@@ -62,7 +62,7 @@ describe('convertStringsToTabText', () => {
       [-1, -1, 2, -1, -1],
       [-1, -1, 3, -1, -1]
     ]
-    const result = convertStringsToTabText(strings, 3);
+    const result = convertStringsToTabText(strings, 3, 1);
 
     expect(result).toBe("2-3\n3-0\n2-0\n0-0\n--2\n--3\n");
   })

@@ -1,8 +1,9 @@
 
+
+arrow key left and right
 shortcuts
 paste into doc
 paste multi line
-numbers over 9
 
 input chords
 notes on head

@@ -24,7 +24,7 @@ function readTabLine(line) {
   return (line.split('').map((s) => !isNaN(s) && ! (s === " ") ? parseInt(s) : -1))
 }
 
-function convertStringsToTabText(strings, lineLength) {
+function convertStringsToTabText(strings, lineLength, minblocks=4) {
   if (strings.length === 0) {
     return ""
   }
@@ -43,7 +43,7 @@ function convertStringsToTabText(strings, lineLength) {
     return lines;
   });
 
-  while(parsed[0].length < 4) {
+  while(parsed[0].length < minblocks) {
     for(let i = 0; i < strings.length; i++) {
       parsed[i].push("-".repeat(lineLength));
     }
@@ -61,7 +61,7 @@ function convertStringsToTabText(strings, lineLength) {
   }
 
 
-  if (parsed[0].length > 4) {
+  if (parsed[0].length > minblocks) {
     const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^-+$/g));
     if (lastLinesAreJustSpace) {
       tab = tab.slice(0, -6);

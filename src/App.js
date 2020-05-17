@@ -12,22 +12,24 @@ class App extends Component {
       insertMode:false,
       cursorPosition: -1,
       lineLength: 65,
-      songs: []
+      songs: [],
+      tuning: ['e', 'B', 'G', 'D', 'A', 'E']
     };
 
     this.handleEditModeChange = this.handleEditModeChange.bind(this);
     this.handleTabEdit = this.handleTabEdit.bind(this);
-    this.handleSave = this.handleSave.bind(this);
+    // this.handleSave = this.handleSave.bind(this);
     this.handleLoad = this.handleLoad.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
-  handleTabEdit(event) {
+
+
+  handleTabLoad(newTab) {
     const cursorPosition = document.getElementById("tab-text").firstElementChild.selectionStart;
     const lineLength = this.state.lineLength;
     const strings = this.state.currentStrings;
     const insertMode = this.state.insertMode;
-    const newTab = event.target.value;
 
     const { newStrings, newCursor } = handleTabEdit(convertTabTextToStrings(newTab), strings, cursorPosition, lineLength, insertMode)
 
@@ -37,11 +39,27 @@ class App extends Component {
     });
   }
 
-
-  handleSave(event) {
+   handleTabEdit(event) {
+    const newTab = event.target.value;
+    this.handleTabLoad(newTab);
   }
 
+
+  // handleSave(event) {
+  //   console.log("saved");
+  // }
+
   handleLoad(event) {
+    const loadedTab = event.target.files[0];
+    const context = this;
+    if (loadedTab) {
+      const reader = new FileReader();
+      reader.onload = function(x) {
+        const contents = x.target.result;
+        context.handleTabLoad(contents);
+      };
+      reader.readAsText(loadedTab);
+    }
   }
 
   buildEditButton(name, positive) {
@@ -69,10 +87,10 @@ class App extends Component {
             <Segment className="action-buttons">
             <List link className="tab-links">
             </List>
-            <Button.Group>
-               <Button content='Save' onClick={this.handleSave}/>
-               <Button content='Load' onClick={this.handleLoad}/>
-              </Button.Group>
+            <div className="ui input">
+              <input type="file" onChange={this.handleLoad}/>
+            </div>
+
             </Segment>
             <Segment>
               <Button.Group>
