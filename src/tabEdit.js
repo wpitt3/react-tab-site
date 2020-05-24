@@ -2,32 +2,53 @@
 function convertTabTextToStrings(tab) {
   const tabLines = tab.split('\n').map((line) => readTabLine(line));
   const sections = tabLines.length / 7;
+  let tunings = [];
+
+  for (var i = 0; i < 6; i++) {
+    tunings[i] = tabLines[i]?.tuning?.trim() || '';
+  }
+
+  if (tunings.every(tuning => !tuning || 0 === tuning.length)) {
+      tunings = [];
+  }
 
   let strings = [[],[],[],[],[],[]];
   for (var x = 0, leny = sections; x < leny; x++) {
     for (var z = 0; z < 6; z++) {
-      strings[z] = strings[z].concat(tabLines[z + x*7])
+      strings[z] = strings[z].concat(tabLines[z + x*7]?.notes)
     }
   }
   for (var y = 0; y < 6; y++) {
     strings[y] = strings[y].filter(note => note !== undefined);
-
-    if (strings[y].length === 0) {
-      strings[y].push(-1);
-      strings[y].push(-1);
-    }
   }
-  return strings;
+  return {tunings: tunings, strings:strings};
 }
 
 function readTabLine(line) {
-  return (line.split('').map((s) => !isNaN(s) && ! (s === " ") ? parseInt(s) : -1))
+  // const allowedPattern = /([A-Fa-f][ #]\|)?[\-0-9hpb\/\\]/;
+  const splitLine = line.split("|");
+  let tuning = "";
+  let notes = "";
+
+  if (splitLine.length === 1) {
+    notes = splitLine[0];
+  } else {
+    tuning = splitLine[0];
+    notes = splitLine[1];
+  }
+
+  return {tuning: tuning, notes: (notes.split('').map((s) => !isNaN(s) && ! (s === " ") ? parseInt(s) : -1))}
 }
 
-function convertStringsToTabText(strings, lineLength, minblocks=4) {
+function convertStringsToTabText(strings, lineLength, minblocks=4, tunings=['e', 'B', 'G', 'D', 'A', 'E']) {
   if (strings.length === 0) {
     return ""
   }
+
+  let tuningPrefixes = [];
+  for (var y = 0; y < 6; y++) {
+    tuningPrefixes[y] = tunings[y] + " ".repeat(2-tunings[y].length) + "|"
+  };
 
   // parsed guitar strings into arrays of rows to display
   let parsed = strings.map(string => {
@@ -53,7 +74,7 @@ function convertStringsToTabText(strings, lineLength, minblocks=4) {
   let tab = [];
   for (var i = 0, len = parsed[0].length; i < len; i++) {
     for (var j = 0; j < 6; j++) {
-      tab.push(parsed[j][i]);
+      tab.push(tuningPrefixes[j] + parsed[j][i]);
     }
     if (i !== len-1) {
       tab.push("");
@@ -62,7 +83,7 @@ function convertStringsToTabText(strings, lineLength, minblocks=4) {
 
 
   if (parsed[0].length > minblocks) {
-    const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^-+$/g));
+    const lastLinesAreJustSpace = tab.slice(-6).every(line => !line || line.match(/^..\|-+$/g));
     if (lastLinesAreJustSpace) {
       tab = tab.slice(0, -6);
     }
@@ -79,7 +100,6 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
   const maxCount = lengths.filter(length => max === length).length
 
   if (max - min !== 1) {
-
     return { newStrings: strings, newCursor: cursorPosition};
   }
 
@@ -103,6 +123,7 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
   // value has been added
   if (maxCount === 1) {
     const firstDifferenceIndex = findFirstDifferenceIndex(cursorPosition, lineLength, true);
+
     const lineIndex = lengths.findIndex(length => length === max);
     if (insertMode) {
       for (var i = 0; i < 6; i++) {
@@ -122,19 +143,21 @@ function handleTabEdit(newStrings, strings, cursorPosition, lineLength, insertMo
 }
 
 function findFirstDifferenceIndex(cursorPosition, lineLength, noteAdded) {
-  const sectionSize = lineLength*6+7;
+  const sectionSize = lineLength*6+25;
   let section = Math.floor(cursorPosition / sectionSize);
-  if (noteAdded && ((cursorPosition%sectionSize)%(lineLength+1)) === 0) {
-    section += 1
+  let modifier = -3;
+  if (noteAdded && ((cursorPosition%sectionSize)%(lineLength+4)) === 0) {
+    modifier += lineLength + 3
+
   }
-  return ((cursorPosition%sectionSize)%(lineLength+1))+(section*lineLength);
+  return ((cursorPosition%sectionSize)%(lineLength+4))+(section*lineLength) + modifier;
 }
 
 function findNewCursorPosition(cursorIndex, lineIndex, lineLength) {
-  const sectionSize = lineLength*6+7;
+  const sectionSize = lineLength*6+25;
 
   const section = Math.floor(cursorIndex / lineLength);
-  return section*sectionSize +(lineLength+1)*lineIndex + cursorIndex%lineLength;
+  return section*sectionSize +(lineLength+4)*lineIndex + cursorIndex%lineLength+3;
 }
 
 function tabHeight(strings, lineLength) {

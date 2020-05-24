@@ -13,7 +13,7 @@ class App extends Component {
       cursorPosition: -1,
       lineLength: 65,
       songs: [],
-      tuning: ['e', 'B', 'G', 'D', 'A', 'E']
+      tunings: ['e', 'B', 'G', 'D', 'A', 'E']
     };
 
     this.handleEditModeChange = this.handleEditModeChange.bind(this);
@@ -23,19 +23,20 @@ class App extends Component {
     this.handleKeyPress = this.handleKeyPress.bind(this);
   }
 
-
-
   handleTabLoad(newTab) {
     const cursorPosition = document.getElementById("tab-text").firstElementChild.selectionStart;
     const lineLength = this.state.lineLength;
-    const strings = this.state.currentStrings;
+    const currentStrings = this.state.currentStrings;
     const insertMode = this.state.insertMode;
+    let { tunings, strings } = convertTabTextToStrings(newTab);
+    tunings = tunings || this.state.tunings
 
-    const { newStrings, newCursor } = handleTabEdit(convertTabTextToStrings(newTab), strings, cursorPosition, lineLength, insertMode)
+    const { newStrings, newCursor } = handleTabEdit(strings, currentStrings, cursorPosition, lineLength, insertMode)
 
     this.setState({
       currentStrings: newStrings,
-      cursorPosition: newCursor
+      cursorPosition: newCursor,
+      tunings: tunings
     });
   }
 
@@ -100,7 +101,7 @@ class App extends Component {
               </Button.Group>
             </Segment>
             <Segment id="tab-text">
-              <TextArea rows={tabHeight(this.state.currentStrings, this.state.lineLength)} value={convertStringsToTabText(this.state.currentStrings, this.state.lineLength)} onKeyDown={this.handleKeyPress} onChange={this.handleTabEdit}/>
+              <TextArea rows={tabHeight(this.state.currentStrings, this.state.lineLength)} value={convertStringsToTabText(this.state.currentStrings, this.state.lineLength, 4, this.state.tunings)} onKeyDown={this.handleKeyPress} onChange={this.handleTabEdit}/>
             </Segment>
           </Grid.Column>
         </Grid>
